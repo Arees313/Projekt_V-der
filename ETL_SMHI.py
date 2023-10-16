@@ -140,7 +140,6 @@ def huvudmeny_hämta_1():
             '9': 'Avsluta'
 
         }
-
         for key,value in välj_2.items():
             print(f"{key}. {value}")
         välj_input_2 = input("Välj mellan 1,2,3,4 eller 9: ")
@@ -184,7 +183,6 @@ def inhämta_nyhet_smhi():
             if parameter['unit'] == 'Cel':
                 temp = parameter['values'][0]
                 temp_x = str(temp)
-                # lista_med_temp.append(temp_x)
             if parameter['name'] == 'pcat':
                 nederbörd = parameter['values'][0]
                 lista_med_regn.append(nederbörd)        
@@ -210,21 +208,22 @@ def inhämta_nyhet_smhi():
     workbook.close()
     print("Excel filen klar!")
     time.sleep(1)
-api_data_omw = []
+dåvarande_data = []
 def hämta_omw():
     latitude = 59.30996552541549
     longitude =  18.02151508449004
     url_OMW = f"https://api.openweathermap.org/data/3.0/onecall?lat={latitude}&lon={longitude}&exclude=daily,minute&units=metric&appid={nykeln.api_key}"
     response_json = requests.get(url_OMW)
     data = json.loads(response_json.text)
-    # print(data)
-    if data not in api_data_omw:
-        api_data_omw.append(data)
-        print("Ny data från Openwathermap inhämtad!")
-    else:
+    ny_data = [(hour['temp'], hour['weather'][0]['main'], hour['dt']) for hour in data['hourly'][1:25]]
+    if dåvarande_data and ny_data == dåvarande_data:
         print("Du har begärt duplicerad data från Openweathermap.")
         return
-    # lista_med_temp_omw = []
+    else:
+        print("Ny data från Openweathermap inhämtad!")
+        dåvarande_data.clear()
+        dåvarande_data.extend(ny_data)
+    # print(ny_data)
     tillagda_rader = 0
     for hourly in data['hourly'][1:25]:
         for weather in hourly['weather']:
@@ -240,19 +239,15 @@ def hämta_omw():
                     cloud = True
             if hourly['dt']:
                 datum = hourly['dt']
-                #datum += 7200
                 formaterad_datum = datetime.datetime.fromtimestamp(datum).strftime('%Y-%m-%d')
             if hourly['temp']:
                 temp = hourly['temp']
                 temp = str(temp)
-                # lista_med_temp_omw.append(temp)
             datum_24 = datum
             datum_24_omformatering = datetime.datetime.fromtimestamp(datum_24)
-            # datum_24fram = datum_24_omformatering.strftime('%Y-%m-%d %H:%M:%S')
             timme_datum24 = datum_24_omformatering.strftime('%H')
             now = datetime.datetime.now()
-            # nu111 = now + datetime.timedelta(hours=1)
-            # now_hour_formaterad = nu111.strftime('%H')
+            nu111 = now + datetime.timedelta(hours=1)
         data_ur_OMW = [ 
             [now, longitude, latitude, formaterad_datum, timme_datum24, temp, cloud, "Openweathermap"]
             
@@ -270,7 +265,7 @@ def hämta_omw():
     print("Excel filen klar!")
     time.sleep(1)
 try:
-    workbook = openpyxl.load_workbook('Väder_Samlaren.xlsx')
+    workbook = openpyxl.load_workbook('Väder_samlaren.xlsx')
     sheet = workbook.active
 except:
     workbook = openpyxl.Workbook()

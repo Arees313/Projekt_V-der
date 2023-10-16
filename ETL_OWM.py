@@ -40,8 +40,7 @@ def hämta_omw():
                     lista_med_temp.append(temp)
                     nu111 = now + datetime.timedelta(hours=1)
                     now_hour_formaterad = nu111.strftime('%H')
-                    f_print = f"{(lista_med_temp)}°C grader {formaterad_datum} {cloud}"
-                    print(f_print)
+                    
                 data_ur_OMW = [ 
                     [now, longitude, latitude, formaterad_datum, now_hour_formaterad, lista_med_temp, cloud, "Openweathermap"]
                     
