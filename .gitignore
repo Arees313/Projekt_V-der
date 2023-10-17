@@ -129,6 +129,8 @@ env.bak/
 venv.bak/
 .nykeln.py
 nykeln.py
+testar tid.py
+.testar tid.py
 # Spyder project settings
 .spyderproject
 .spyproject
