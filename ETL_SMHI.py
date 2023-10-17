@@ -192,7 +192,6 @@ def inhämta_nyhet_smhi():
             now_hour_formaterad = nu111.strftime('%H')
             now = now + datetime.timedelta(hours=1)
             if nederbörd >= 1:
-                parameter['name'] == 'pcat' and värde <= 1
                 result = True
             else:
                 result = False
@@ -223,7 +222,6 @@ def hämta_omw():
         print("Ny data från Openweathermap inhämtad!")
         dåvarande_data.clear()
         dåvarande_data.extend(ny_data)
-    # print(ny_data)
     tillagda_rader = 0
     for hourly in data['hourly'][1:25]:
         for weather in hourly['weather']:
