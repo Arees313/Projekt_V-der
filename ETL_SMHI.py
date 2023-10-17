@@ -128,7 +128,7 @@ def skriva_ut_prognos():
             elif välj_prognos== '3':
                 print("Återgår till förgående meny")
                 time.sleep(1)
-                huvud_meny()
+                break
 def huvudmeny_hämta_1():
     while True:
         time.sleep(1)
@@ -161,7 +161,6 @@ def huvudmeny_hämta_1():
 
 api_data = []
 def inhämta_nyhet_smhi():
-    lista_med_regn =  []
     now = datetime.datetime.now()
     now_formaterad = now.strftime('%Y-%m-%d')
     nu = datetime.datetime.now()
@@ -176,7 +175,6 @@ def inhämta_nyhet_smhi():
     else:
         print("Du har begärt duplicerad data från SMHI.")
         return
-    värde = 0
     time_series_json = json_data_från_api['timeSeries'][:24]
     for time_series in time_series_json:
         for parameter in time_series['parameters']:           
@@ -184,8 +182,7 @@ def inhämta_nyhet_smhi():
                 temp = parameter['values'][0]
                 temp_x = str(temp)
             if parameter['name'] == 'pcat':
-                nederbörd = parameter['values'][0]
-                lista_med_regn.append(nederbörd)        
+                nederbörd = parameter['values'][0]      
         while (now < now_24):
             nu111 = now + datetime.timedelta(hours=1)
             now_formaterad = now.strftime('%Y-%m-%d')
@@ -209,8 +206,6 @@ def inhämta_nyhet_smhi():
     time.sleep(1)
 dåvarande_data = []
 def hämta_omw():
-    latitude = 59.30996552541549
-    longitude =  18.02151508449004
     url_OMW = f"https://api.openweathermap.org/data/3.0/onecall?lat={latitude}&lon={longitude}&exclude=daily,minute&units=metric&appid={nykeln.api_key}"
     response_json = requests.get(url_OMW)
     data = json.loads(response_json.text)
@@ -245,7 +240,6 @@ def hämta_omw():
             datum_24_omformatering = datetime.datetime.fromtimestamp(datum_24)
             timme_datum24 = datum_24_omformatering.strftime('%H')
             now = datetime.datetime.now()
-            nu111 = now + datetime.timedelta(hours=1)
         data_ur_OMW = [ 
             [now, longitude, latitude, formaterad_datum, timme_datum24, temp, cloud, "Openweathermap"]
             
